@@ -47,7 +47,6 @@ int main(int argc, char const *argv[])
 
 	cudaMemcpy(d_x, x, lim*sizeof(int), cudaMemcpyHostToDevice);
 	cudaMemcpy(d_y, y, lim*sizeof(int), cudaMemcpyHostToDevice);
-	cudaMemcpy(d_z, z, lim*sizeof(int), cudaMemcpyHostToDevice);
 
 	int blocks = ceil((float)lim/threads);
 	

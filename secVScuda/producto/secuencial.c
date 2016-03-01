@@ -1,67 +1,71 @@
 #include <stdio.h>
+#include <time.h>
 #include <stdlib.h>
 
-#define dimiz 10
-#define dimmd 10
-#define dimde 10
+#define a 1000
+#define b 3000
+#define c 5000
 
-void llenarMatriz(double **w, int li, int lj){
+void llenarMatriz(double *w, int li, int lj){
   double count = 0;
   for(int i=0; i<li; i++){
     for(int j=0; j<lj; j++){
-      w[i][j] = count;
+      w[i*li+j] = count;
       count++;
     }
   }
 }
 
-void product(double **x, double **y, double**z){
-  for(int i=0; i<dimiz; i++){
-    for(int j=0; j<dimde; j++){
+void product(double *x, double *y, double *z){
+  for(int i=0; i<a; i++){
+    for(int j=0; j<c; j++){
       double acum=0;
-      for(int k=0; k<dimmd; k++){
-        acum+=x[i][k]*y[k][j];
+      for(int k=0; k<b; k++){
+        acum+=x[i*a+k]*y[k*b+j];
       }
-      z[i][j]=acum;
+      z[i*a+j]=acum;
     }
   }
 }
 
-void print(double **w, int li, int lj){
+void print(double *w, int li, int lj){
   for(int i=0; i<li; i++){
     for(int j=0; j<lj; j++){
-      printf("%.4lf ", w[i][j]);
+      printf("%.4lf ", w[i*li+j]);
     }
     printf("\n");
   }
 }
 
-double** Make2DDoubleArray(int arraySizeX, int arraySizeY) {
-  double** theArray;
-  theArray = (double**) malloc(arraySizeX*sizeof(double*));
-  for (int i = 0; i < arraySizeX; i++)
-    theArray[i] = (double*) malloc(arraySizeY*sizeof(double));
-  return theArray;
-}
-
 int main(){
 
+  //double **x = malloc(a * sizeof *x + (a * (b * sizeof **x)));
+  //double **y = malloc(b * sizeof *y + (b * (c * sizeof **y)));
+  //double **z = malloc(a * sizeof *z + (a * (c * sizeof **z)));
 
-  //double **x = malloc(dimiz * sizeof *x + (dimiz * (dimmd * sizeof **x)));
-  //double **y = malloc(dimmd * sizeof *y + (dimmd * (dimde * sizeof **y)));
-  //double **z = malloc(dimiz * sizeof *z + (dimiz * (dimde * sizeof **z)));
+  int size1 = a*b*sizeof(double);
+  int size2 = b*c*sizeof(double);
+  int size3 = a*c*sizeof(double);
 
-  double **x = Make2DDoubleArray(dimiz,dimmd);
-  double **y = Make2DDoubleArray(dimmd,dimiz);
-  double **z = Make2DDoubleArray(dimiz,dimde);
+  double *x = (double*)malloc(size1);
+  double *y = (double*)malloc(size2);
+  double *z = (double*)malloc(size3);
 
-	llenarMatriz(x,dimiz,dimmd);
-	llenarMatriz(y,dimmd,dimde);
+  llenarMatriz(x,a,b);
+  llenarMatriz(y,b,c);
 
-  print(x,dimiz,dimmd);
+  clock_t begin, end;
+  double time_spent;
+  begin = clock();
 
-	product(x,y,z);
+  product(x,y,z);
 
-	//print(z,dimiz,dimde);
+  end = clock();
+  time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+  printf("%lf\n", time_spent);
+
+  //print(z,a,c);
+
+  //print(z,a,c);
 
 }
