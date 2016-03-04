@@ -66,8 +66,8 @@ int main(int argc, char const *argv[])
   cudaMemcpy(d_x, x, size1, cudaMemcpyHostToDevice);
   cudaMemcpy(d_y, y, size2, cudaMemcpyHostToDevice);
 
-  int blkdim = 16;
-  dim3 dimBlock(blkdim,blkdim);
+  int threads = 16;
+  dim3 dimBlock(threads,threads);
   dim3 dimGrid((c+dimBlock.x-1)/dimBlock.x, (a+dimBlock.y-1)/dimBlock.y);
 
   add<<<dimGrid,dimBlock>>>(d_x, d_y, d_z);
