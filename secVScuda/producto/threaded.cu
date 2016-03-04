@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include <cuda.h>
 
-#define a 3
-#define b 5
-#define c 4
+#define a 2
+#define b 3
+#define c 2
 
 void llenarMatriz(double *w, int li, int lj){
   double count = 0;
@@ -29,7 +29,13 @@ void print(double *w, int li, int lj){
 __global__
 void add(double *d_x, double *d_y, double *d_z){
 
-
+  int row = blockIdx.y*blockDim.y+threadIdx.y;
+  int col = blockIdx.x*blockDim.x+threadIdx.x;
+  double sum = 0;
+  if ((row < a) && (col < c)){
+    for (int i = 0; i < b; i++) sum += d_x[b*row + i] * d_y[i*c+col];
+    d_z[row*c+col] = sum;
+  }
 }
 
 int main(int argc, char const *argv[])
@@ -60,18 +66,23 @@ int main(int argc, char const *argv[])
   cudaMemcpy(d_x, x, size1, cudaMemcpyHostToDevice);
   cudaMemcpy(d_y, y, size2, cudaMemcpyHostToDevice);
 
-//  product<<<,>>>
+  int blkdim = 16;
+  dim3 dimBlock(blkdim,blkdim);
+  dim3 dimGrid((c+dimBlock.x-1)/dimBlock.x, (a+dimBlock.y-1)/dimBlock.y);
 
-  for(int i=0; i<a*b; i++){
-    printf("%.4lf\n", x[i]);
-  }
+  add<<<dimGrid,dimBlock>>>(d_x, d_y, d_z);
+
+  cudaMemcpy(z,d_z,size3,cudaMemcpyDeviceToHost);
 
   print(x,a,b);
+  printf("\n");
+  print(y,b,c);
+  printf("\n");
+  print(z,a,c);
 
   end = clock();
   time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-  //printf("%lf\n", time_spent);
-
+  printf("%lf\n", time_spent);
 
   return 0;
 }
