@@ -7,7 +7,7 @@
 #define b 3
 #define c 2
 
-void llenarMatriz(double *w, int li, int lj){
+void fillMatrix(double *w, int li, int lj){
   double count = 0;
   for(int i=0; i<li; i++){
     for(int j=0; j<lj; j++){
@@ -27,7 +27,7 @@ void print(double *w, int li, int lj){
 }
 
 __global__
-void add(double *d_x, double *d_y, double *d_z){
+void product(double *d_x, double *d_y, double *d_z){
 
   int row = blockIdx.y*blockDim.y+threadIdx.y;
   int col = blockIdx.x*blockDim.x+threadIdx.x;
@@ -48,8 +48,8 @@ int main(int argc, char const *argv[])
   double *y = (double*)malloc(size2);
   double *z = (double*)malloc(size3);
 
-  llenarMatriz(x,a,b);
-  llenarMatriz(y,b,c);
+  fillMatrix(x,a,b);
+  fillMatrix(y,b,c);
 
   clock_t begin, end;
   double time_spent;
@@ -70,7 +70,7 @@ int main(int argc, char const *argv[])
   dim3 dimBlock(threads,threads);
   dim3 dimGrid((c+dimBlock.x-1)/dimBlock.x, (a+dimBlock.y-1)/dimBlock.y);
 
-  add<<<dimGrid,dimBlock>>>(d_x, d_y, d_z);
+  product<<<dimGrid,dimBlock>>>(d_x, d_y, d_z);
 
   cudaMemcpy(z,d_z,size3,cudaMemcpyDeviceToHost);
 

@@ -6,7 +6,7 @@
 #define b 300
 #define c 500
 
-void llenarMatriz(double *w, int li, int lj){
+void fillMatrix(double *w, int li, int lj){
   double count = 0;
   for(int i=0; i<li; i++){
     for(int j=0; j<lj; j++){
@@ -51,8 +51,8 @@ int main(){
   double *y = (double*)malloc(size2);
   double *z = (double*)malloc(size3);
 
-  llenarMatriz(x,a,b);
-  llenarMatriz(y,b,c);
+  fillMatrix(x,a,b);
+  fillMatrix(y,b,c);
 
   clock_t begin, end;
   double time_spent;

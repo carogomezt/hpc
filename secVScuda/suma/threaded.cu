@@ -11,7 +11,7 @@ void print(int *w){
   }
 }
 
-void llenarVector(int *w){
+void fillVector(int *w){
   for(int i=0; i<lim; i++){
     w[i]=i;
   }
@@ -32,8 +32,8 @@ int main(int argc, char const *argv[])
   int *y = (int*)malloc(lim*sizeof(int));
   int *z = (int*)malloc(lim*sizeof(int));
 
-  llenarVector(x);
-  llenarVector(y);
+  fillVector(x);
+  fillVector(y);
 
   int *d_x, *d_y, *d_z;
 
@@ -74,8 +74,3 @@ int main(int argc, char const *argv[])
 
   return 0;
 }
-
-//Combination threads and blocmks
-
-// i = blockIdx.x * blockDim.x + threadIdx.x;
-
