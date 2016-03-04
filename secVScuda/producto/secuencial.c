@@ -2,9 +2,9 @@
 #include <time.h>
 #include <stdlib.h>
 
-#define a 1000
-#define b 3000
-#define c 5000
+#define a 100
+#define b 300
+#define c 500
 
 void llenarMatriz(double *w, int li, int lj){
   double count = 0;
