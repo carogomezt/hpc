@@ -3,8 +3,18 @@
 #include <stdlib.h>
 #include <cuda.h>
 
-#define n 1000
+#define n 10
 #define m 32
+
+#define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
+inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)
+{
+  if (code != cudaSuccess)
+  {
+    fprintf(stderr,"GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
+    if (abort) exit(code);
+  }
+}
 
 void fillMatrix(double *w, int li, int lj){
   double count = 0;
@@ -25,8 +35,7 @@ void print(double *w, int li, int lj){
   }
 }
 
-__global__ void product(float* Md, float* Nd, float* Pd, int Width)
-{
+__global__ void product(double* d_x, double* d_y, double* d_z){
   __shared__ float Mds[m][m];
   __shared__ float Nds[m][m];
   int bx = blockIdx.x;
@@ -37,15 +46,15 @@ __global__ void product(float* Md, float* Nd, float* Pd, int Width)
   int Row = by * m + ty;
   int Col = bx * m + tx;
   float Pvalue = 0;
-  for (int m = 0; m < n/m; ++m) {
-      Mds[ty][tx] = Md[Row*n + (m*m + tx)];
-      Nds[ty][tx] = Nd[Col + (m*m + ty)*n];
+  for (int i = 0; i < n/m; ++i) {
+      Mds[ty][tx] = d_x[Row*n + (i*m + tx)];
+      Nds[ty][tx] = d_y[Col + (i*m + ty)*n];
       __syncthreads();
       for (int k = 0; k < m; ++k)
         Pvalue += Mds[ty][k] * Nds[k][tx];
       __syncthreads();
     }
-  Pd[Row*n+Col] = Pvalue;
+  d_z[Row*n+Col] = Pvalue;
 }
 
 int main(int argc, char const *argv[])
@@ -96,3 +105,4 @@ int main(int argc, char const *argv[])
 
   return 0;
 }
+
