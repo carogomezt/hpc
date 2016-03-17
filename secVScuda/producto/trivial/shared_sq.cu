@@ -27,52 +27,39 @@ void print(double *w, int li, int lj){
 
 __global__ void product(float* Md, float* Nd, float* Pd, int Width)
 {
-  __shared__ float Mds[TILE_WIDTH][TILE_WIDTH];
-  __shared__ float Nds[TILE_WIDTH][TILE_WIDTH];
+  __shared__ float Mds[m][m];
+  __shared__ float Nds[m][m];
   int bx = blockIdx.x;
   int by = blockIdx.y;
   int tx = threadIdx.x;
   int ty = threadIdx.y;
 
-  int Row = by * TILE_WIDTH + ty;
-  int Col = bx * TILE_WIDTH + tx;
+  int Row = by * m + ty;
+  int Col = bx * m + tx;
   float Pvalue = 0;
-  for (int m = 0; m < Width/TILE_WIDTH; ++m) {
-      Mds[ty][tx] = Md[Row*Width + (m*TILE_WIDTH + tx)];
-      Nds[ty][tx] = Nd[Col + (m*TILE_WIDTH + ty)*Width];
+  for (int m = 0; m < n/m; ++m) {
+      Mds[ty][tx] = Md[Row*n + (m*m + tx)];
+      Nds[ty][tx] = Nd[Col + (m*m + ty)*n];
       __syncthreads();
-      for (int k = 0; k < TILE_WIDTH; ++k)
+      for (int k = 0; k < m; ++k)
         Pvalue += Mds[ty][k] * Nds[k][tx];
-      Synchthreads();
+      __syncthreads();
     }
-  Pd[Row*Width+Col] = Pvalue;
-}
-
-__global__
-void product(double *d_x, double *d_y, double *d_z){
-
-  __shared__ smx
-  int row = blockIdx.y*blockDim.y+threadIdx.y;
-  int col = blockIdx.x*blockDim.x+threadIdx.x;
-  double sum = 0;
-  if ((row < a) && (col < c)){
-    for (int i = 0; i < b; i++) sum += d_x[b*row + i] * d_y[i*c+col];
-    d_z[row*c+col] = sum;
-  }
+  Pd[Row*n+Col] = Pvalue;
 }
 
 int main(int argc, char const *argv[])
 {
-  int size1 = a*b*sizeof(double);
-  int size2 = b*c*sizeof(double);
-  int size3 = a*c*sizeof(double);
+  int size1 = n*n*sizeof(double);
+  int size2 = n*n*sizeof(double);
+  int size3 = n*n*sizeof(double);
 
   double *x = (double*)malloc(size1);
   double *y = (double*)malloc(size2);
   double *z = (double*)malloc(size3);
 
-  fillMatrix(x,a,b);
-  fillMatrix(y,b,c);
+  fillMatrix(x,n,n);
+  fillMatrix(y,n,n);
 
   clock_t begin, end;
   double time_spent;
@@ -91,17 +78,17 @@ int main(int argc, char const *argv[])
 
   int threads = 16;
   dim3 dimBlock(threads,threads);
-  dim3 dimGrid((c+dimBlock.x-1)/dimBlock.x, (a+dimBlock.y-1)/dimBlock.y);
+  dim3 dimGrid((n+dimBlock.x-1)/dimBlock.x, (n+dimBlock.y-1)/dimBlock.y);
 
   product<<<dimGrid,dimBlock>>>(d_x, d_y, d_z);
 
   cudaMemcpy(z,d_z,size3,cudaMemcpyDeviceToHost);
 
-  print(x,a,b);
+  print(x,n,n);
   printf("\n");
-  print(y,b,c);
+  print(y,n,n);
   printf("\n");
-  print(z,a,c);
+  print(z,n,n);
 
   end = clock();
   time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
