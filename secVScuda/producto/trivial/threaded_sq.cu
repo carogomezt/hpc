@@ -3,22 +3,22 @@
 #include <stdlib.h>
 #include <cuda.h>
 
-#define n 2
+#define n 6
 
-void fillMatrix(double *w, int li, int lj){
+void fillMatrix(double *w){
   double count = 0;
-  for(int i=0; i<li; i++){
-    for(int j=0; j<lj; j++){
-      w[i*lj+j] = count;
+  for(int i=0; i<n; i++){
+    for(int j=0; j<n; j++){
+      w[i*n+j] = count;
       count++;
     }
   }
 }
 
-void print(double *w, int li, int lj){
-  for(int i=0; i<li; i++){
-    for(int j=0; j<lj; j++){
-      printf("%.4lf ", w[i*lj+j]);
+void print(double *w){
+  for(int i=0; i<n; i++){
+    for(int j=0; j<n; j++){
+      printf("%.4lf ", w[i*n+j]);
     }
     printf("\n");
   }
@@ -38,31 +38,29 @@ void product(double *d_x, double *d_y, double *d_z){
 
 int main(int argc, char const *argv[])
 {
-  int size1 = n*n*sizeof(double);
-  int size2 = n*n*sizeof(double);
-  int size3 = n*n*sizeof(double);
+  int size = n*n*sizeof(double);
 
-  double *x = (double*)malloc(size1);
-  double *y = (double*)malloc(size2);
-  double *z = (double*)malloc(size3);
+  double *x = (double*)malloc(size);
+  double *y = (double*)malloc(size);
+  double *z = (double*)malloc(size);
 
-  fillMatrix(x,n,n);
-  fillMatrix(y,n,n);
+  fillMatrix(x);
+  fillMatrix(y);
 
   clock_t begin, end;
   double time_spent;
   begin = clock();
 
-  double *d_x = (double*)malloc(size1);
-  double *d_y = (double*)malloc(size2);
-  double *d_z = (double*)malloc(size3);
+  double *d_x;
+  double *d_y;
+  double *d_z;
 
-  cudaMalloc((void**)&d_x, size1);
-  cudaMalloc((void**)&d_y, size2);
-  cudaMalloc((void**)&d_z, size3);
+  cudaMalloc((void**)&d_x, size);
+  cudaMalloc((void**)&d_y, size);
+  cudaMalloc((void**)&d_z, size);
 
-  cudaMemcpy(d_x, x, size1, cudaMemcpyHostToDevice);
-  cudaMemcpy(d_y, y, size2, cudaMemcpyHostToDevice);
+  cudaMemcpy(d_x, x, size, cudaMemcpyHostToDevice);
+  cudaMemcpy(d_y, y, size, cudaMemcpyHostToDevice);
 
   int threads = 16;
   dim3 dimBlock(threads,threads);
@@ -70,13 +68,13 @@ int main(int argc, char const *argv[])
 
   product<<<dimGrid,dimBlock>>>(d_x, d_y, d_z);
 
-  cudaMemcpy(z,d_z,size3,cudaMemcpyDeviceToHost);
+  cudaMemcpy(z,d_z,size,cudaMemcpyDeviceToHost);
 
-  print(x,n,n);
+  print(x);
   printf("\n");
-  print(y,n,n);
+  print(y);
   printf("\n");
-  print(z,n,n);
+  print(z);
 
   end = clock();
   time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
