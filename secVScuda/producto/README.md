@@ -18,7 +18,7 @@ Especificaciones:
 
 ## Pruebas
 
-Para las pruebas se utiliza un dataset de vectores que varian en 100, 1000, 10000, 100000, 1000000 y 10000000 posiciones. Cada prueba fue ejecutada 10 veces para disminuir el ruido. Al final se analiza el factor de aceleracion en base a los tiempos de ejecucion en cada algoritmo. Se anexa un conjunto de pruebas mas usando 1024 hilos (usando la implementacion paralela), contrastando con los 32 hilos de la implementacion original.
+Para las pruebas se utiliza un dataset de matrices cuadradas n*n, donde n varia en 32, 64, 96, 128, 160, 320, 384, 480, 640 y 704. Cada prueba fue ejecutada 15 veces para disminuir el ruido. Al final se analiza el factor de aceleracion en base a los tiempos de ejecucion en cada algoritmo. 
 
 **Implementacion secuencial:** Ninguna mencion especial.
 
