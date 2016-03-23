@@ -33,56 +33,61 @@ En la siguiente tabla se muestran los promedios para cada una de las 6 pruebas e
 ### Secuencial
 | Tamaño (n) | Media (s)  |
 | -----------| ---------- |
-| 100        | 0.000001   |
-| 1000       | 0.000005   |
-| 10000      | 0.000049   |
-| 100000     | 0.000417   |
-| 1000000    | 0.003857   |
-| 10000000   | 0.026056   |
-| 10000000   | 0.026056   |
-| 10000000   | 0.026056   |
-| 10000000   | 0.026056   |
-| 10000000   | 0.026056   |
+| 32         | 0,000153   |
+| 64         | 0,000808   |
+| 96         | 0,002987   |
+| 128        | 0,007393   |
+| 160        | 0,015264   |
+| 320        | 0,113656   |
+| 384        | 0,251936   |
+| 480        | 0,650449   |
+| 640        | 1,270345   |
+| 704        | 5,855701   |
 
-### CUDA 32 Threads
+
+### CUDA 32 threads
 | Tamaño (n) | Media (s)  |
 | -----------| ---------- |
-| 100        | 0.093371   |
-| 1000       | 0.094815   |
-| 10000      | 0.088516   |
-| 100000     | 0.093428   |
-| 1000000    | 0.099781   |
-| 10000000   | 0.118817   |
-| 10000000   | 0.118817   |
-| 10000000   | 0.118817   |
-| 10000000   | 0.118817   |
-| 10000000   | 0.118817   |
+| 32         | 0,000054   |
+| 64         | 0,000190   |
+| 96         | 0,000258   |
+| 128        | 0,000409   |
+| 160        | 0,000678   |
+| 320        | 0,002949   |
+| 384        | 0,004793   |
+| 480        | 0,008839   |
+| 640        | 0,029355   |
+| 704        | 0,025366   |
 
 
-### CUDA 1024 Threads
+### CUDA 32 Threads - 32*32 Tiles
 | Tamaño (n) | Media (s)  |
 | -----------| ---------- |
-| 100        | 0.094012   |
-| 1000       | 0.098624   |
-| 10000      | 0.093407   |
-| 100000     | 0.099471   |
-| 1000000    | 0.101861   |
-| 10000000   | 0.117360   |
-| 10000000   | 0.117360   |
-| 10000000   | 0.117360   |
-| 10000000   | 0.117360   |
-| 10000000   | 0.117360   |
+| 32         | 0,000140   |
+| 64         | 0,000128   |
+| 96         | 0,000193   |
+| 128        | 0,000286   |
+| 160        | 0,000628   |
+| 320        | 0,001329   |
+| 384        | 0,002048   |
+| 480        | 0,003624   |
+| 640        | 0,038325   |
+| 704        | 0,008433   |
 
-Los resultados se condensan en el siguiente grafico:
+Los resultados se condensan en los siguiente grafico:
 
-![alt tag](graph.jpg)
+### Algoritmos paralelos
+![alt tag](graph2.png)
+
+### Algoritmos paralelos y secuencial
+![alt tag](graph1.png)
 
 ## Conclusiones
 
-- Con base a los resultados obtenidos, se puede concluir que, en general, para la suma de vectores presenta un mejor desempeño la implementacion en CPU secuencial que la codificacion en CUDA.
+- Con base a los resultados obtenidos, se puede concluir que, en general, para la multiplicacion de matrices presenta un mejor desempeño cualquiera de las dos implementaciones paralelas en comparacion a la implementacion secuencial.
 
-- La transferencia de datos a traves del PCI Express representa la mayor parte del consumo de tiempo en la implementacion paralela con GPU.
+- La transferencia de datos a traves del PCI Express representa la mayor parte del consumo de tiempo en la implementacion paralela con GPU. A pesar de eso, una pequeña porcion de datos es utlilizada en multiples operaciones paralelizables (en contraste a la suma), lo cual permite que dicho costo de transferencia sea compensado ampliamente por el ahorro en tiempo de computo de la GPU frente a la CPU.
 
-- La transferencia de datos a traves del PCI Express representa la mayor parte del consumo de tiempo en la implementacion paralela con GPU, y por tanto, la suma vectorial no explota al maximo las capcidades de la computacion en paralelo
+- En general, la implementacion usando Shared Memory representa una mejora en tiempo, con respecto a su competidora nativa con Global Memory. Sin embargo en ocasiones, al superponer las capas de memoria compartida para acelerar el proceso, da lugar a que se generen tiles completas para procesar solo pequeñas porciones de la matriz original, caso en el cual se desperdicia tiempo de computo. Esto es que, la optimizacion con tiles funciona mejor cuando el tamaño de los tiles se ajust a bien al tamaño total de la matriz.
 
-- Cuanta mayor cantidad de operaciones sea posible acelerar en GPU, y cuanta menor memoria sea necesaria transferir, mejora el desempeño de la GPU
+- Cuanta mayor cantidad de operaciones sea posible acelerar en GPU, y cuanta menor memoria sea necesaria transferir, mejor es el desempeño de la GPU.
