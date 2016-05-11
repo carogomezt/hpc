@@ -1,0 +1,37 @@
+#include <cv.h>
+#include <highgui.h>
+
+using namespace cv;
+
+int main( int argc, char** argv )
+{
+	char* imageName = argv[1];
+
+	Mat image;
+	image = imread( imageName, CV_LOAD_IMAGE_COLOR );
+	
+
+	if( argc != 2 || !image.data )
+	{
+		printf( " No image data \n " );
+		return -1;
+	}
+	
+	Mat gray_image = image.clone();
+	
+	for (int i = 0; i < gray_image.rows; i++){
+		for(int j = 0; j < gray_image.cols; j++){
+			Vec3b pixel = gray_image.at<Vec3b>(i, j);
+			int prom = (pixel[0] + pixel[1] + pixel[2])/3;
+			pixel[0]= prom; pixel[1]= prom; pixel[2]= prom;
+			gray_image.at<Vec3b>(i,j) = pixel;
+		}
+	}
+
+	imshow( "Original", image );
+	imshow( "Grises", gray_image );
+	waitKey(0);
+
+	return 0;
+}
+
