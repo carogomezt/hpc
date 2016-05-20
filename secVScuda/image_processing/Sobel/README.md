@@ -76,10 +76,10 @@ En la siguiente tabla se muestran los promedios para cada una de las 6 pruebas e
 Los resultados se condensan en los siguiente grafico:
 
 ### Algoritmos paralelos
-![alt tag](graph2.png)
+![alt tag](graph.png)
 
 ### Algoritmos paralelos y secuencial
-![alt tag](graph1.png)
+![alt tag](graph2.png)
 
 ## Conclusiones
 
