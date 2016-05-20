@@ -98,10 +98,12 @@ Los resultados se condensan en los siguiente grafico:
 
 ## Conclusiones
 
-- Con base a los resultados obtenidos, se puede concluir que, en general, para la multiplicacion de matrices presenta un mejor desempeño cualquiera de las dos implementaciones paralelas en comparacion a la implementacion secuencial.
+- Con base a los resultados obtenidos, se puede concluir que, en general, para la aplicar el filtro de sobel presenta un mejor desempeño cualquiera de las dos implementaciones paralelas en comparacion a la implementacion secuencial.
 
 - La transferencia de datos a traves del PCI Express representa la mayor parte del consumo de tiempo en la implementacion paralela con GPU. A pesar de eso, una pequeña porcion de datos es utlilizada en multiples operaciones paralelizables (en contraste a la suma), lo cual permite que dicho costo de transferencia sea compensado ampliamente por el ahorro en tiempo de computo de la GPU frente a la CPU.
 
-- En general, la implementacion usando Shared Memory representa una mejora en tiempo, con respecto a su competidora nativa con Global Memory. Sin embargo en ocasiones, al superponer las capas de memoria compartida para acelerar el proceso, da lugar a que se generen tiles completas para procesar solo pequeñas porciones de la matriz original, caso en el cual se desperdicia tiempo de computo. Esto es que, la optimizacion con tiles funciona mejor cuando el tamaño de los tiles se ajust a bien al tamaño total de la matriz.
+- En general, la implementacion usando Cache representa una mejora en tiempo, con respecto a su competidora nativa con Global y shared Memory. Sin embargo en ocasiones, al superponer las capas de memoria compartida, da lugar a que se generen tiles completas para procesar solo pequeñas porciones de la matriz original, caso en el cual se desperdicia tiempo de computo. Esto es que, la optimizacion con tiles funciona mejor cuando el tamaño de los tiles se ajusta a bien al tamaño total de la matriz.
 
 - Cuanta mayor cantidad de operaciones sea posible acelerar en GPU, y cuanta menor memoria sea necesaria transferir, mejor es el desempeño de la GPU.
+
+- Existe un comportamiento muy parejo y lineal entre la cantidad de pixeles y el tiempo que tarda cualquiera de los algoritmos al procesarlo. Al expresarse los pixeles como una magnitud total width*height, y no como una medicion cuadrada, se aprecia que el tiempo aumenta de forma lineal. Al expresarse como una medicion cuadrada, se apreciara una parabola (debido al aumento de pixeles)
