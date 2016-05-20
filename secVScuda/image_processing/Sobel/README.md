@@ -59,7 +59,7 @@ En la siguiente tabla se muestran los promedios para cada una de las 10 pruebas 
 | 75659406      | 0,22500594   |
 
 
-### CUDA Shared Memory
+### CUDA Shared
 | Tamaño (px)   | Media (s)    |
 | ------------- | ------------ |
 | 157360        | 0,00069182   |
