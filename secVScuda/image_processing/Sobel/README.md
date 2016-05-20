@@ -27,7 +27,7 @@ Para las pruebas se utiliza un dataset de 9 imagenes que oscilan entre 1 y 4 MPx
 
 ## Resultados
 
-En la siguiente tabla se muestran los promedios para cada una de las 6 pruebas en las 3 implementaciones:
+En la siguiente tabla se muestran los promedios para cada una de las 10 pruebas en las 4 implementaciones:
 
 ### Secuencial
 | Tamaño (px)   | Media (s)    |
