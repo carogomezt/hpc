@@ -1,4 +1,4 @@
-# Comparacion entre una implementacion secuencial (CPU), una paralela (CUDA), y una paralela usando Shared Memory (CUDA) para multiplicar 2 matrices
+# Comparacion entre una implementacion secuencial (CPU) y tres paralelas en CUDA (Global, Shared, Cache) para aplicar el filtro de Sobel
 
 El tratamiento de imagenes es una de las aplicaciones en las que mas se emplean las GPU, debido a su capacidad de procesar matrices rapidamente y liberando a la CPU de esta carga.
 
